@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>panelOS</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-id">PANELOS · REV 1.0</div>
+  <div class="boot-mark">Booting</div>
+  <div class="boot-rule"></div>
+  <div class="boot-log" id="boot-log">mounting filesystem</div>
+</div>
+
+<div id="desktop">
+  <div id="topbar">
+    <div class="tb-left">
+      <div class="tb-brand">panelOS</div>
+      <div class="tb-menu" id="tb-menu">
+        <div class="tb-menu-item" data-menu="file">File
+          <div class="tb-dropdown">
+            <button data-action="new-note">New Note</button>
+            <button data-action="open-prefs">Preferences…</button>
+            <button data-action="close-focused">Close Window</button>
+          </div>
+        </div>
+        <div class="tb-menu-item" data-menu="edit">Edit
+          <div class="tb-dropdown">
+            <button data-action="clear-note">Clear Active Note</button>
+          </div>
+        </div>
+        <div class="tb-menu-item" data-menu="view">View
+          <div class="tb-dropdown">
+            <button data-action="close-all">Close All Windows</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-stat"><span class="tb-led"></span><span id="tb-uptime">up 0:00</span></div>
+      <div id="tb-clock">--:--:--</div>
+    </div>
+  </div>
+
+  <div id="icons">
+    <div class="icon" data-app="notes"><div class="glyph">N</div><div class="label">Notes</div></div>
+    <div class="icon" data-app="calc"><div class="glyph">=</div><div class="label">Calc</div></div>
+    <div class="icon" data-app="prefs"><div class="glyph">⚙</div><div class="label">Prefs</div></div>
+    <div class="icon" data-app="about"><div class="glyph">i</div><div class="label">About</div></div>
+  </div>
+
+  <div id="dock"><span class="dock-empty">no windows open</span></div>
+  <div id="windows-layer"></div>
+</div>
+
+<script src="js/theme.js"></script>
+<script src="js/apps.js"></script>
+<script src="js/boot.js"></script>
+<script src="js/clock.js"></script>
+<script src="js/window-manager.js"></script>
+</body>
+</html>
