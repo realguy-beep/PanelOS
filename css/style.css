@@ -41,7 +41,16 @@ html,body{
 .boot-log{ font-family:var(--font-chrome); font-size:11px; color:var(--text-lo); min-height:14px; letter-spacing:.3px; }
 
 /* NO AI USED SO STOP SEARCHING FOR AI TRACES*/
-#desktop{ position:fixed; inset:0; background:var(--bg-void); }
+#desktop{
+  position:fixed; inset:0;
+  background-color:var(--bg-void);
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+    radial-gradient(circle at 78% 18%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 34%),
+    radial-gradient(circle at 18% 82%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 30%);
+  background-size:32px 32px, 32px 32px, 100% 100%, 100% 100%;
+}
 
 #topbar{
   position:absolute; top:0; left:0; right:0; height:30px;
