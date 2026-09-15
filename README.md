@@ -10,7 +10,8 @@
 ## 4.It also features a window manager where u can manage your tabs
 window manager the first will help you open many tabs and will  help to navigate between them
 
-## You can also try this project by downloading the repository and running the index file
+## You can also try this project by downloading the repository and running the index file or through this link:
+https://realguy-beep.github.io/PanelOS/
 
 
 Right now panelOS its on its development stage and trust me i have much more things upcoming for this
