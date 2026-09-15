@@ -15,3 +15,5 @@ window manager the first will help you open many tabs and will  help to navigate
 
 Right now panelOS its on its development stage and trust me i have much more things upcoming for this
 made by -realguy 
+## BYE!!
+![](assets/73532a0a11e3811987b48d040d115d29.jpg)
