@@ -120,16 +120,5 @@ const appDefs = {
         wrap.appendChild(el);
       });
     }
-  },
-
-  about: {
-    title: 'About', width: 320, height: 240,
-    render: () => `
-      <div class="app-about">
-        <h2>panelOS</h2>
-        <p>A small desktop that lives in a browser tab — <b>HTML</b>, <b>CSS</b>, and <b>JavaScript</b>, no frameworks.</p>
-        <p style="margin-top:10px;">Drag titlebars to move windows, the bottom-right corner to resize. Everything visual is driven by the <b>THEMES</b> config in js/theme.js — edit it or add your own preset and it appears in Preferences automatically.</p>
-      </div>`,
-    afterMount: ()=>{}
   }
 };

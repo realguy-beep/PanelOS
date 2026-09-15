@@ -91,10 +91,9 @@ html, body {
 #tb-clock { color: var(--text-hi); font-variant-numeric: tabular-nums; }
 
 #icons { position: absolute; top: 48px; left: 16px; display: flex; flex-direction: column; gap: 16px; }
-.icon { width: 72px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; user-select: none; padding: 6px 2px; border-radius: var(--radius-s); }
-.icon:hover { background: rgba(255, 255, 255, .08); }
-.icon .glyph { width: 40px; height: 40px; border-radius: var(--radius-m); display: flex; align-items: center; justify-content: center; font-size: 15px; font-family: var(--font-chrome); font-weight: 600; border: 1px solid var(--line); background: var(--bg-panel); color: var(--text-hi); }
-.icon .label { font-size: 10.5px; color: var(--text-lo); font-family: var(--font-chrome); text-align: center; }
+.icon { width: 72px; display: flex; flex-direction: column; align-items: center; cursor: pointer; user-select: none; padding: 5px 2px; border-radius: var(--radius-s); }
+.icon:hover { background: rgba(255, 255, 255, .06); }
+.icon .glyph { width: 68px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-family: var(--font-body); font-weight: 500; color: var(--text-hi); border: 1px solid var(--line); background: var(--bg-panel); border-radius: var(--radius-s); }
 
 #dock { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 1px; padding: 3px; background: var(--bg-panel); border: 1px solid var(--line); border-radius: var(--radius-m); z-index: 500; min-height: 16px; }
 .dock-item { padding: 5px 10px; font-family: var(--font-chrome); font-size: 10.5px; color: var(--text-lo); cursor: pointer; border-radius: var(--radius-s); }
@@ -116,26 +115,23 @@ html, body {
 .win-resize::after { content: ''; position: absolute; right: 4px; bottom: 4px; width: 6px; height: 6px; border-right: 2px solid var(--line); border-bottom: 2px solid var(--line); }
 
 .app-notes { width: 100%; height: 100%; display: flex; flex-direction: column; }
-.app-notes textarea { flex: 1; width: 100%; border: none; resize: none; outline: none; background: var(--bg-panel); color: var(--text-hi); font-family: var(--font-chrome); font-size: 13px; line-height: 1.6; padding: 14px; }
-.app-notes .notes-bar { padding: 5px 12px; font-size: 10.5px; color: var(--text-lo); font-family: var(--font-chrome); border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
+.app-notes textarea { flex: 1; width: 100%; border: none; resize: none; outline: none; background: var(--bg-panel); color: var(--text-hi); font-family: var(--font-body); font-size: 13px; line-height: 1.5; padding: 14px; }
+.app-notes .notes-bar { padding: 5px 12px; font-size: 10px; color: var(--text-lo); font-family: var(--font-body); border-top: 1px solid var(--line); display: flex; justify-content: space-between; }
 .app-calc { width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--bg-panel); }
-.calc-display { padding: 20px 14px 6px; text-align: right; font-family: var(--font-chrome); font-weight: 600; font-size: 30px; color: var(--text-hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.calc-sub { padding: 0 14px 10px; text-align: right; font-size: 11px; color: var(--text-lo); font-family: var(--font-chrome); min-height: 14px; }
+.calc-display { padding: 18px 14px 6px; text-align: right; font-family: var(--font-body); font-weight: 500; font-size: 28px; color: var(--text-hi); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.calc-sub { padding: 0 14px 8px; text-align: right; font-size: 10px; color: var(--text-lo); font-family: var(--font-body); min-height: 14px; }
 .calc-grid { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); }
-.calc-btn { background: var(--bg-panel-2); border: none; color: var(--text-hi); font-family: var(--font-chrome); font-size: 15px; cursor: pointer; }
-.calc-btn:hover { background: var(--bg-panel); }
-.calc-btn.op { color: var(--accent); }
-.calc-btn.eq { background: var(--accent); color: var(--bg-void); font-weight: 700; }
+.calc-btn { background: var(--bg-panel-2); border: none; color: var(--text-hi); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.calc-btn:hover { background: var(--line); }
+.calc-btn.op { color: var(--text-hi); }
+.calc-btn.eq { background: var(--text-hi); color: var(--bg-void); font-weight: 600; }
 .calc-btn.zero { grid-column: span 2; }
 
-.app-about { padding: 22px; font-size: 13px; line-height: 1.7; color: var(--text-lo); }
-.app-about h2 { font-family: var(--font-chrome); color: var(--text-hi); font-size: 16px; margin-bottom: 10px; letter-spacing: .5px; }
-.app-about b { color: var(--text-hi); }
-.app-prefs { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-.prefs-label { font-family: var(--font-chrome); font-size: 11px; color: var(--text-lo); letter-spacing: .5px; }
-.prefs-swatches { display: flex; gap: 10px; }
-.swatch { width: 64px; padding: 10px 8px; border-radius: var(--radius-s); border: 1px solid var(--line); cursor: pointer; font-family: var(--font-chrome); font-size: 10.5px; color: var(--text-lo); display: flex; flex-direction: column; gap: 8px; align-items: flex-start; background: var(--bg-panel-2); }
-.swatch.active { border-color: var(--accent); color: var(--text-hi); }
+.app-prefs { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.prefs-label { font-family: var(--font-body); font-size: 10px; color: var(--text-lo); letter-spacing: .5px; }
+.prefs-swatches { display: flex; gap: 6px; }
+.swatch { width: 70px; padding: 8px 7px; border-radius: var(--radius-s); border: 1px solid var(--line); cursor: pointer; font-family: var(--font-body); font-size: 10px; color: var(--text-lo); display: flex; flex-direction: column; gap: 6px; align-items: flex-start; background: var(--bg-panel-2); }
+.swatch.active { border-color: var(--text-hi); color: var(--text-hi); }
 .swatch .swatch-dots { display: flex; gap: 4px; }
 .swatch .dot { width: 12px; height: 12px; border-radius: 50%; }
 
