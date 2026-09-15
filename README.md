@@ -1,5 +1,5 @@
-#PanelOS#
-PanelOs is a webOS service coded with js and css to give the person a feel of a premium OS within their browser
+#PanelOS
+## panelOs is a webOS service coded with js and css to give the person a feel of a premium OS within their browser
 panel os features are:
 1.a calculator which can calculate:
 ![PanelOS has a calculator to calculate your time wasted on your debugging sessions :).]("C:\Users\LENOVO\Pictures\Screenshots\Screenshot%202026-09-15%20055800.png")
