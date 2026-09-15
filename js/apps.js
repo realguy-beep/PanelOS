@@ -63,6 +63,7 @@ const appDefs = {
           default: return b;
         }
       }
+/*what you looking at not ai*/
       body.querySelectorAll('.calc-btn').forEach(btn=>{
         btn.addEventListener('click', ()=>{
           const k = btn.dataset.k;
