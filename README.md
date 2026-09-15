@@ -1,11 +1,11 @@
-PANEL OS is a webOS designed by me to learn more about js,css and html 
+#PanelOS#
+PanelOs is a webOS service coded with js and css to give the person a feel of a premium OS within their browser
 panel os features are:
-1.a clock which tracks your local time and shows it at the top right of the tab
-2.a calculator which can calculate 
+1.a calculator which can calculate:
+![PanelOS has a calculator to calculate your time wasted on your debugging sessions :).]("C:\Users\LENOVO\Pictures\Screenshots\Screenshot 2026-09-15 055800.png")
 3.3 types of themes including white mode and green mode
 4.a notes app for you to handle your notes
 5.It also features a window manager where u can manage your tabs
-You can test this project from this link:https://realguy-beep.github.io/PanelOS/
 
 You can also try this project by downloading the repository and running the index file
 
