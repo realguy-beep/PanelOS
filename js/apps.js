@@ -1,5 +1,7 @@
 const appDefs = {
   notes: {
+    id: 'notes',
+    name: 'Notes',
     title: 'Notes', width: 360, height: 280,
     render: () => `
       <div class="app-notes">
@@ -20,6 +22,8 @@ const appDefs = {
   },
 
   calc: {
+    id: 'calc',
+    name: 'Calculator',
     title: 'Calculator', width: 250, height: 320,
     render: () => `
       <div class="app-calc">
@@ -94,6 +98,8 @@ const appDefs = {
   },
 
   prefs: {
+    id: 'prefs',
+    name: 'Preferences',
     title: 'Preferences', width: 320, height: 200,
     render: () => `
       <div class="app-prefs">
@@ -115,8 +121,12 @@ const appDefs = {
             <div class="dot" style="background:${t.accent}"></div>
             <div class="dot" style="background:${t.accent2}"></div>
           </div>
-          <div>${t.name}</div>`;
-        el.addEventListener('click', ()=> applyTheme(key));
+          <div>${key}</div>`;
+        el.addEventListener('click', ()=> {
+          applyTheme(key);
+          localStorage.setItem('panelos-theme', key);
+          wrap.querySelectorAll('.swatch').forEach(swatch => swatch.classList.toggle('active', swatch === el));
+        });
         wrap.appendChild(el);
       });
     }

@@ -1,21 +1,68 @@
 const THEMES = {
-  carbon:   { name:'Carbon',   bgVoid:'#121214', bgPanel:'#1b1c1f', bgPanel2:'#232428', line:'#303237', textHi:'#eceef1', textLo:'#85888f', accent:'#d8a24a', accent2:'#4fb3a6' },
-  terminal: { name:'Terminal', bgVoid:'#0c1210', bgPanel:'#121a17', bgPanel2:'#182420', line:'#25342e', textHi:'#d8f5df', textLo:'#5f8f74', accent:'#3ddc84', accent2:'#e0c341' },
-  daylight: { name:'Daylight', bgVoid:'#e9e6df', bgPanel:'#f6f4ef', bgPanel2:'#ece9e1', line:'#d6d2c7', textHi:'#20201c', textLo:'#75726a', accent:'#a8562e', accent2:'#3c6e71' },
+  carbon: {
+    bgVoid: '#0a0a0a',
+    bgPanel: '#141414',
+    bgPanel2: '#1e1e1e',
+    line: '#333333',
+    textHi: '#ffffff',
+    textLo: '#888888',
+    accent: '#00cc66',
+    accent2: '#00994d'
+  },
+  terminal: {
+    bgVoid: '#000000',
+    bgPanel: '#001100',
+    bgPanel2: '#002200',
+    line: '#003300',
+    textHi: '#00ff00',
+    textLo: '#00aa00',
+    accent: '#00ff00',
+    accent2: '#00cc00'
+  },
+  daylight: {
+    bgVoid: '#e0e0e0',
+    bgPanel: '#ffffff',
+    bgPanel2: '#f0f0f0',
+    line: '#cccccc',
+    textHi: '#111111',
+    textLo: '#555555',
+    accent: '#0066cc',
+    accent2: '#004c99'
+  },
+  grid: {
+    bgVoid: '#1a1a1a',
+    bgPanel: '#242424',
+    bgPanel2: '#2f2f2f',
+    line: '#e60000',
+    textHi: '#ffffff',
+    textLo: '#cccccc',
+    accent: '#e60000',
+    accent2: '#ffffff'
+  }
 };
 
-function applyTheme(key){
-  const t = THEMES[key];
-  if(!t) return;
-  const r = document.documentElement.style;
-  r.setProperty('--bg-void', t.bgVoid);
-  r.setProperty('--bg-panel', t.bgPanel);
-  r.setProperty('--bg-panel-2', t.bgPanel2);
-  r.setProperty('--line', t.line);
-  r.setProperty('--text-hi', t.textHi);
-  r.setProperty('--text-lo', t.textLo);
-  r.setProperty('--accent', t.accent);
-  r.setProperty('--accent-2', t.accent2);
-  localStorage.setItem('panelos-theme', key);
-  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.theme === key));
+const DEFAULT_THEME = 'grid';
+const THEME_DEFAULT_VERSION = '2';
+
+function applyTheme(themeName) {
+  const theme = THEMES[themeName] || THEMES.grid;
+  const root = document.documentElement;
+  root.style.setProperty('--bg-void', theme.bgVoid);
+  root.style.setProperty('--bg-panel', theme.bgPanel);
+  root.style.setProperty('--bg-panel-2', theme.bgPanel2);
+  root.style.setProperty('--line', theme.line);
+  root.style.setProperty('--text-hi', theme.textHi);
+  root.style.setProperty('--text-lo', theme.textLo);
+  root.style.setProperty('--accent', theme.accent);
+  root.style.setProperty('--accent-2', theme.accent2);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const hasCurrentDefault = localStorage.getItem('panelos-theme-default-version') === THEME_DEFAULT_VERSION;
+  if (!hasCurrentDefault) {
+    localStorage.setItem('panelos-theme', DEFAULT_THEME);
+    localStorage.setItem('panelos-theme-default-version', THEME_DEFAULT_VERSION);
+  }
+  const saved = localStorage.getItem('panelos-theme') || DEFAULT_THEME;
+  applyTheme(saved);
+});

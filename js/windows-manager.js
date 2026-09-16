@@ -1,161 +1,241 @@
-const layer = document.getElementById('windows-layer');
-const dock = document.getElementById('dock');
-let zTop = 10;
-let openWindows = {};
-
-function bringToFront(win) {
-  document.querySelectorAll('.win').forEach(w => w.classList.remove('focused'));
-  zTop += 1;
-  win.style.zIndex = zTop;
-  win.classList.add('focused');
-  updateDock();
-}
-
-function updateDock() {
-  const ids = Object.keys(openWindows);
-  if (ids.length === 0) {
-    dock.innerHTML = '<span class="dock-empty">no windows open</span>';
-    return;
+class WindowsManager {
+  constructor() {
+    this.layer = document.getElementById("windows-layer");
+    this.zIndex = 100;
   }
-  dock.innerHTML = '';
-  ids.forEach(id => {
-    const el = document.createElement('div');
-    el.className = 'dock-item' + (openWindows[id].el.classList.contains('focused') ? ' active' : '');
-    el.textContent = appDefs[id].title;
-    el.addEventListener('click', () => bringToFront(openWindows[id].el));
-    dock.appendChild(el);
-  });
-}
 
-function openApp(appId) {
-  if (openWindows[appId]) {
-    bringToFront(openWindows[appId].el);
-    return;
+  createWindow(appDef) {
+    const win = document.createElement("div");
+    win.className = `win app-${appDef.id}`;
+    win.style.left = "100px";
+    win.style.top = "100px";
+    win.style.width = typeof appDef.width === "number" ? `${appDef.width}px` : (appDef.width || "400px");
+    win.style.height = typeof appDef.height === "number" ? `${appDef.height}px` : (appDef.height || "300px");
+    win.style.zIndex = this.zIndex++;
+
+    const titlebar = document.createElement("div");
+    titlebar.className = "win-titlebar";
+    
+    const titleText = document.createElement("span");
+    titleText.className = "title";
+    titleText.textContent = appDef.title;
+    titlebar.appendChild(titleText);
+
+    const controls = document.createElement("div");
+    controls.className = "win-controls";
+
+    const maxBtn = document.createElement("button");
+    maxBtn.className = "win-btn max";
+    maxBtn.type = "button";
+    maxBtn.title = "Maximize window; double-click for fullscreen";
+    maxBtn.setAttribute("aria-label", "Maximize window");
+    
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "win-btn close";
+    closeBtn.type = "button";
+    closeBtn.title = "Close window";
+    closeBtn.setAttribute("aria-label", "Close window");
+
+    controls.appendChild(maxBtn);
+    controls.appendChild(closeBtn);
+    titlebar.appendChild(controls);
+
+    const body = document.createElement("div");
+    body.className = "win-body";
+    body.innerHTML = appDef.render ? appDef.render() : (appDef.content || "");
+
+    const resize = document.createElement("div");
+    resize.className = "win-resize";
+
+    win.appendChild(titlebar);
+    win.appendChild(body);
+    win.appendChild(resize);
+    this.layer.appendChild(win);
+
+    this.bindEvents(win, titlebar, resize, closeBtn, maxBtn);
+    appDef.afterMount?.(body);
+    return { win, body };
   }
-  const def = appDefs[appId];
-  const win = document.createElement('div');
-  win.className = 'win';
-  const offset = Object.keys(openWindows).length * 24;
-  win.style.left = (110 + offset) + 'px';
-  win.style.top = (60 + offset) + 'px';
-  win.style.width = def.width + 'px';
-  win.style.height = def.height + 'px';
-  win.innerHTML = `
-    <div class="win-titlebar">
-      <div class="title">${def.title}</div>
-      <div class="win-controls">
-        <button class="win-btn min" title="Minimize">–</button>
-        <button class="win-btn max" title="Maximize">□</button>
-        <button class="win-btn close" title="Close">×</button>
-      </div>
-    </div>
-    <div class="win-body">${def.render()}</div>
-    <div class="win-resize"></div>
-  `;
-  layer.appendChild(win);
-  openWindows[appId] = { el: win };
-  def.afterMount(win.querySelector('.win-body'));
-  bringToFront(win);
-  win.addEventListener('mousedown', () => bringToFront(win));
 
-  const titlebar = win.querySelector('.win-titlebar');
-  let dragging = false, offX = 0, offY = 0;
-  titlebar.addEventListener('mousedown', (e) => {
-    if (e.target.classList.contains('win-btn')) return;
-    dragging = true;
-    offX = e.clientX - win.offsetLeft;
-    offY = e.clientY - win.offsetTop;
-  });
+  bindEvents(win, titlebar, resize, closeBtn, maxBtn) {
+    win.addEventListener("mousedown", () => {
+      win.style.zIndex = this.zIndex++;
+    });
 
-  let resizing = false;
-  win.querySelector('.win-resize').addEventListener('mousedown', (e) => {
-    resizing = true;
-    e.stopPropagation();
-  });
+    closeBtn.addEventListener("click", () => {
+      win.remove();
+    });
 
-  window.addEventListener('mousemove', (e) => {
-    if (dragging) {
-      win.style.left = Math.max(0, e.clientX - offX) + 'px';
-      win.style.top = Math.max(30, e.clientY - offY) + 'px';
-    }
-    if (resizing) {
-      win.style.width = Math.max(230, e.clientX - win.offsetLeft) + 'px';
-      win.style.height = Math.max(150, e.clientY - win.offsetTop) + 'px';
-    }
-  });
-  window.addEventListener('mouseup', () => {
-    dragging = false;
-    resizing = false;
-  });
-/*yoo nothing ai here stop the search and review me lol*/
-  win.querySelector('.win-btn.close').addEventListener('click', () => {
-    win.remove();
-    delete openWindows[appId];
-    updateDock();
-  });
-  win.querySelector('.win-btn.min').addEventListener('click', () => {
-    win.style.display = 'none';
-  });
-  let maximized = false, prevRect = null;
-  win.querySelector('.win-btn.max').addEventListener('click', () => {
-    if (!maximized) {
-      prevRect = { left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height };
-      win.style.left = '8px';
-      win.style.top = '38px';
-      win.style.width = 'calc(100% - 16px)';
-      win.style.height = 'calc(100% - 84px)';
-    } else {
-      win.style.left = prevRect.left;
-      win.style.top = prevRect.top;
-      win.style.width = prevRect.width;
-      win.style.height = prevRect.height;
-    }
-    maximized = !maximized;
-  });
+    let isMaximized = false;
+    let savedRect = {};
 
-  updateDock();
+    maxBtn.addEventListener("click", () => {
+      if (!isMaximized) {
+        savedRect = {
+          left: win.style.left,
+          top: win.style.top,
+          width: win.style.width,
+          height: win.style.height
+        };
+        win.style.left = "0";
+        win.style.top = "0";
+        win.style.width = "100%";
+        win.style.height = "100%";
+        isMaximized = true;
+      } else {
+        win.style.left = savedRect.left;
+        win.style.top = savedRect.top;
+        win.style.width = savedRect.width;
+        win.style.height = savedRect.height;
+        isMaximized = false;
+      }
+    });
+
+    maxBtn.addEventListener("dblclick", () => {
+      if (document.fullscreenEnabled) {
+        if (!document.fullscreenElement) {
+          win.requestFullscreen().catch(err => {
+            console.log("Fullscreen request failed", err);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      } else {
+        console.log("Fullscreen API is not supported in this browser.");
+      }
+    });
+
+    let isDragging = false;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    titlebar.addEventListener("mousedown", (e) => {
+      if (e.target.tagName === "BUTTON") return;
+      isDragging = true;
+      const rect = win.getBoundingClientRect();
+      const layerRect = this.layer.getBoundingClientRect();
+      dragOffsetX = e.clientX - (rect.left - layerRect.left);
+      dragOffsetY = e.clientY - (rect.top - layerRect.top);
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        const layerRect = this.layer.getBoundingClientRect();
+        win.style.left = `${e.clientX - layerRect.left - dragOffsetX}px`;
+        win.style.top = `${e.clientY - layerRect.top - dragOffsetY}px`;
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    let isResizing = false;
+    let startWidth = 0;
+    let startHeight = 0;
+    let startX = 0;
+    let startY = 0;
+
+    resize.addEventListener("mousedown", (e) => {
+      isResizing = true;
+      const rect = win.getBoundingClientRect();
+      startWidth = rect.width;
+      startHeight = rect.height;
+      startX = e.clientX;
+      startY = e.clientY;
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isResizing) {
+        win.style.width = `${startWidth + (e.clientX - startX)}px`;
+        win.style.height = `${startHeight + (e.clientY - startY)}px`;
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isResizing = false;
+    });
+  }
 }
 
-document.querySelectorAll('.icon').forEach(icon => {
-  let clicks = 0;
-  icon.addEventListener('click', () => {
-    clicks++;
-    if (clicks === 1) {
-      setTimeout(() => { if (clicks === 1) openApp(icon.dataset.app); clicks = 0; }, 260);
-    }
-  });
-  icon.addEventListener('dblclick', () => openApp(icon.dataset.app));
-});
+window.winManager = new WindowsManager();
 
-document.querySelectorAll('.tb-menu-item').forEach(item => {
-  item.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const wasOpen = item.classList.contains('open');
-    document.querySelectorAll('.tb-menu-item').forEach(i => i.classList.remove('open'));
-    if (!wasOpen) item.classList.add('open');
-  });
-});
-document.addEventListener('click', () => {
-  document.querySelectorAll('.tb-menu-item').forEach(i => i.classList.remove('open'));
-});
+document.addEventListener('DOMContentLoaded', () => {
+  const dock = document.getElementById('dock');
 
-document.querySelectorAll('.tb-dropdown button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const action = btn.dataset.action;
+  function openApp(appId) {
+    const appDef = appDefs[appId];
+    if (!appDef) return;
+    const instance = window.winManager.createWindow(appDef);
+    const item = document.createElement('button');
+    item.className = 'dock-item active';
+    item.textContent = appDef.name || appDef.title;
+    item.addEventListener('click', () => {
+      instance.win.style.zIndex = window.winManager.zIndex++;
+    });
+    dock.querySelector('.dock-empty')?.remove();
+    dock.appendChild(item);
+    instance.win.querySelector('.win-btn.close').addEventListener('click', () => {
+      item.remove();
+      if (!dock.querySelector('.dock-item')) {
+        dock.innerHTML = '<span class="dock-empty">no windows open</span>';
+      }
+    });
+  }
+
+  document.querySelectorAll('.icon[data-app]').forEach(icon => {
+    icon.addEventListener('click', () => openApp(icon.dataset.app));
+  });
+
+  function focusedWindow() {
+    return [...document.querySelectorAll('#windows-layer .win')]
+      .sort((a, b) => Number(b.style.zIndex) - Number(a.style.zIndex))[0];
+  }
+
+  function closeFocusedWindow() {
+    focusedWindow()?.querySelector('.win-btn.close')?.click();
+  }
+
+  function runMenuAction(action) {
     if (action === 'new-note') openApp('notes');
     if (action === 'open-prefs') openApp('prefs');
-    if (action === 'close-focused') {
-      const f = document.querySelector('.win.focused');
-      if (f) f.querySelector('.win-btn.close').click();
+    if (action === 'close-focused') closeFocusedWindow();
+    if (action === 'close-all') {
+      [...document.querySelectorAll('#windows-layer .win')].forEach(win => {
+        win.querySelector('.win-btn.close')?.click();
+      });
     }
     if (action === 'clear-note') {
-      const ta = document.querySelector('.win.focused .app-notes textarea');
-      if (ta) { ta.value = ''; ta.dispatchEvent(new Event('input')); }
+      const note = focusedWindow()?.querySelector('.app-notes textarea');
+      if (note) {
+        note.value = '';
+        note.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     }
-    if (action === 'close-all') {
-      document.querySelectorAll('.win').forEach(w => w.querySelector('.win-btn.close').click());
+  }
+
+  const menu = document.getElementById('tb-menu');
+  menu.addEventListener('click', event => {
+    const actionButton = event.target.closest('[data-action]');
+    if (actionButton) {
+      event.stopPropagation();
+      runMenuAction(actionButton.dataset.action);
+      menu.querySelectorAll('.tb-menu-item').forEach(item => item.classList.remove('open'));
+      return;
+    }
+
+    const menuItem = event.target.closest('.tb-menu-item');
+    if (menuItem) {
+      const shouldOpen = !menuItem.classList.contains('open');
+      menu.querySelectorAll('.tb-menu-item').forEach(item => item.classList.remove('open'));
+      menuItem.classList.toggle('open', shouldOpen);
+    }
+  });
+
+  document.addEventListener('click', event => {
+    if (!event.target.closest('#tb-menu')) {
+      menu.querySelectorAll('.tb-menu-item').forEach(item => item.classList.remove('open'));
     }
   });
 });
-/*DW CODING DONE BY ME I.E. NO AI USED*/
-applyTheme(localStorage.getItem('panelos-theme') || 'carbon');
